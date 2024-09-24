@@ -1,7 +1,14 @@
+import { Route, Routes } from "react-router-dom";
+import Admin from "./pages/admin";
+import SignIn from "./pages/sign-in/SignIn";
+
 function App() {
   return (
     <>
-      <h1 className="text-blue-500 font-bold text-8xl">Hello world</h1>
+      <Routes>
+        <Route path="/" element={<Admin />} />
+        <Route path="/sign-in" element={<SignIn />} />
+      </Routes>
     </>
   );
 }
