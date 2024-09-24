@@ -1,6 +1,7 @@
 import React from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Header from "../../components/header/Header";
+import { Outlet } from "react-router-dom";
 
 const Admin = () => {
   return (
@@ -8,7 +9,9 @@ const Admin = () => {
       <Sidebar />
       <div className="flex-col ml-[250px]">
         <Header />
-        <p>lorem100000</p>
+        <div className="pt-[70px]">
+          <Outlet />
+        </div>
       </div>
     </main>
   );
