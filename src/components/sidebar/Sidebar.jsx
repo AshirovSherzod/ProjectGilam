@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   return (
@@ -6,6 +7,7 @@ const Sidebar = () => {
         <div className="h-[70px] border-b-[1px] flex items-center px-[20px] border-[#E0E0E0]">
             <h1 className="font-bold text-[24px]">Your Logo</h1>
         </div>
+        <NavLink></NavLink>
     </section>
   );
 };
