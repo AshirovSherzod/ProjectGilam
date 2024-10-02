@@ -1,13 +1,51 @@
-import { NavLink } from "react-router-dom";
-import React from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { GrServices, GrShop } from "react-icons/gr";
+import { PiTrendUpFill } from "react-icons/pi";
+import { MdOutlineLocationOn } from "react-icons/md";
 
 const Sidebar = () => {
+  const { pathname } = useLocation();
+
   return (
-    <section className="w-[250px] h-[100vh] fixed bg-white border-r-[1px] border-[#E0E0E0]">
-      <div className="h-[70px] border-b-[1px] flex items-center px-[20px] border-[#E0E0E0]">
-        <h1 className="font-bold text-[24px]">Your Logo</h1>
+    <section className="w-[250px] h-[100vh] fixed bg-[#232627]">
+      <div className="h-[70px] flex items-center px-[20px]">
+        <h1 className="font-bold text-[24px] text-white">Your Logo</h1>
       </div>
-      <NavLink></NavLink>
+      <div className="flex flex-col gap-1 mt-2">
+        <NavLink
+          className={`flex flex-row items-center gap-2 text-[16px] text-white rounded-[10px] mx-2 px-5 py-3 ${
+            pathname.includes("main") ? "bg-[#656868]" : ""
+          }`}
+          to={"/admin/main"}
+        >
+          <PiTrendUpFill /> Statistics
+        </NavLink>
+        <NavLink
+          className={`flex flex-row items-center gap-2 text-[16px] text-white rounded-[10px] mx-2 px-5 py-3 ${
+            pathname.includes("orders") ? "bg-[#656868]" : ""
+          }`}
+          to={"/admin/orders"}
+        >
+          <GrShop /> Orders
+        </NavLink>
+        <NavLink
+          className={`flex flex-row items-center gap-2 text-[16px] text-white rounded-[10px] mx-2 px-5 py-3 ${
+            pathname.includes("services") ? "bg-[#656868]" : ""
+          }`}
+          to={"/admin/services"}
+        >
+          <GrServices /> Services
+        </NavLink>
+        <NavLink
+          className={`flex flex-row items-center gap-2 text-[16px] text-white rounded-[10px] mx-2 px-5 py-3 ${
+            pathname.includes("users") ? "bg-[#656868]" : ""
+          }`}
+          to={"/admin/users"}
+        >
+          <MdOutlineLocationOn /> Address
+        </NavLink>
+      </div>
     </section>
   );
 };
