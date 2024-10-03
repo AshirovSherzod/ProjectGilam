@@ -7,6 +7,7 @@ import Main from "./pages/admin/main/Main";
 import Services from "./pages/admin/services/Services";
 import Users from "./pages/admin/users/Users";
 import Auth from "./pages/auth/Auth";
+import Profile from "./pages/admin/profile/Profile";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="orders" element={<Orders />} />
             <Route path="services" element={<Services />} />
             <Route path="users" element={<Users />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Route>
 
