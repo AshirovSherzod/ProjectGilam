@@ -1,6 +1,6 @@
-import { api } from "./index";
+import { api1 } from "./index";
 
-export const authApi = api.injectEndpoints({
+export const authApi = api1.injectEndpoints({
   endpoints: (build) => ({
     signin: build.mutation({
       query: (body) => ({
@@ -8,7 +8,7 @@ export const authApi = api.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Auth"],
+      invalidatesTags: ["Auth", "Profile"],
     }),
     signup: build.mutation({
       query: (body) => ({

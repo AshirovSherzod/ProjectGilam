@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message, } from "antd";
 import { useSigninMutation } from "../../context/api/authApi";
 import { useDispatch } from "react-redux";
 import { setToken } from "../../context/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
-  const [signIn, { data, isLoading, isSuccess }] = useSigninMutation();
+  const [signIn, { data, isLoading, isSuccess, isError }] = useSigninMutation();
+  const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -17,12 +18,26 @@ const SignIn = () => {
     }
   }, [isSuccess]);
 
+  useEffect(() => {
+    if (isError) {
+      error();
+    }
+  }, [isError]);
+
+  const error = () => {
+    messageApi.open({
+      type: "error",
+      content: "Username or password is inccorect",
+    });
+  };
+
   const onFinish = (values) => {
     console.log(values);
     signIn(values);
   };
   return (
     <div className="w-[100vw] h-[100vh] flex items-center  justify-center">
+      {contextHolder}
       <Form
         className="w-[450px] flex flex-col gap-[20px]"
         layout="vertical"
@@ -54,7 +69,9 @@ const SignIn = () => {
             },
           ]}
         >
-          <Input.Password style={{ border: "1px solid #232627", outline: "none" }}  />
+          <Input.Password
+            style={{ border: "1px solid #232627", outline: "none" }}
+          />
         </Form.Item>
 
         <Form.Item className="">
