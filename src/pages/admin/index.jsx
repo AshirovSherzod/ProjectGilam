@@ -9,7 +9,10 @@ const Admin = () => {
       <Sidebar />
       <div className="flex-col ml-[250px]">
         <Header />
-        <div className="pt-[70px]">
+        <div
+          style={{ height: "100vh" }}
+          className="w-[100%]  pt-[70px] bg-[#f6f6f6]"
+        >
           <Outlet />
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Form, Input, message, } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { useSigninMutation } from "../../context/api/authApi";
 import { useDispatch } from "react-redux";
 import { setToken } from "../../context/slices/authSlice";
@@ -14,7 +14,7 @@ const SignIn = () => {
   useEffect(() => {
     if (isSuccess) {
       dispatch(setToken(data.refresh_token));
-      navigate("/admin/main");
+      navigate("/admin/company");
     }
   }, [isSuccess]);
 
