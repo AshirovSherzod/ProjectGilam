@@ -1,8 +1,8 @@
 import { NavLink, useLocation } from "react-router-dom";
 import React, { useState } from "react";
 import { GrServices, GrShop } from "react-icons/gr";
-import { PiTrendUpFill } from "react-icons/pi";
 import { MdOutlineLocationOn } from "react-icons/md";
+import { FaRegBuilding } from "react-icons/fa";
 
 const Sidebar = () => {
   const { pathname } = useLocation();
@@ -15,11 +15,11 @@ const Sidebar = () => {
       <div className="flex flex-col gap-1 mt-2">
         <NavLink
           className={`flex flex-row items-center gap-2 text-[16px] text-white rounded-[10px] mx-2 px-5 py-3 ${
-            pathname.includes("main") ? "bg-[#656868]" : ""
+            pathname.includes("company") ? "bg-[#656868]" : ""
           }`}
-          to={"/admin/main"}
+          to={"/admin/company"}
         >
-          <PiTrendUpFill /> Statistics
+          <FaRegBuilding /> Company
         </NavLink>
         <NavLink
           className={`flex flex-row items-center gap-2 text-[16px] text-white rounded-[10px] mx-2 px-5 py-3 ${
