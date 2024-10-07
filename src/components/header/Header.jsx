@@ -7,7 +7,7 @@ import { logout } from "../../context/slices/authSlice";
 
 const Header = () => {
   const { data } = useGetProfileQuery();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   console.log(data);
 
   return (
@@ -30,7 +30,10 @@ const Header = () => {
             <p className="text-white">{data?.role}</p>
           </div>
         </Link>
-        <div onClick={()=> dispatch(logout())} className="w-[50px] h-[50px] mr-[20px] flex items-center justify-center hover:bg-[#808080] rounded-[15px] transition-all">
+        <div
+          onClick={() => dispatch(logout())}
+          className="w-[50px] h-[50px] mr-[20px] flex items-center justify-center hover:bg-[#808080] rounded-[15px] transition-all"
+        >
           <MdLogout className="text-[30px] text-white" />
         </div>
       </div>

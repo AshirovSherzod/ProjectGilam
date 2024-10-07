@@ -1,7 +1,9 @@
 import React from "react";
 import { useGetProfileQuery } from "../../../context/api/userApi";
 import img from "../../../assets/profile-img.png";
-import { GoPerson } from "react-icons/go";
+import { GoGitBranch, GoPerson } from "react-icons/go";
+import { PiUserFocusFill } from "react-icons/pi";
+import { FaPhone } from "react-icons/fa";
 
 const Profile = () => {
   const { data } = useGetProfileQuery();
@@ -20,17 +22,43 @@ const Profile = () => {
           Edit Password
         </button>
       </div>
-      <div className="flex flex-row h-[400px] bg-white py-[30px] px-[20px] border-[2px] rounded-[5px]">
+      <div className="flex flex-row h-[400px] bg-white gap-[20px] py-[30px] px-[20px] border-[2px] rounded-[5px]">
         <div className="h-[200px] w-[200px] flex">
           <img className="w-full" src={img} alt="" />
         </div>
-        <div className="flex flex-col">
-          <p className="flex flex-row items-center gap-[5px]">
-            <span className="text-[20px]">
+        <div className="flex flex-col gap-[20px]">
+          <div className="flex flex-row items-center gap-[30px]">
+            <span className="flex items-center justify-center rounded-[5px] w-[40px] h-[40px] text-[22px] border-[1px]">
               <GoPerson />
             </span>{" "}
-            {data?.full_name}
-          </p>
+            <p className="flex items-center w-[250px] h-[40px] pl-[20px] rounded-[5px] border-[1px]">
+              {data?.full_name}
+            </p>
+          </div>
+          <div className="flex flex-row items-center gap-[30px]">
+            <span className="flex items-center justify-center rounded-[5px] w-[40px] h-[40px] text-[22px] border-[1px]">
+              <PiUserFocusFill />
+            </span>{" "}
+            <p className="flex items-center w-[250px] h-[40px] pl-[20px] rounded-[5px] border-[1px]">
+              {data?.username}
+            </p>
+          </div>
+          <div className="flex flex-row items-center gap-[30px]">
+            <span className="flex items-center justify-center rounded-[5px] w-[40px] h-[40px] text-[22px] border-[1px]">
+              <GoGitBranch />
+            </span>{" "}
+            <p className="flex items-center w-[250px] h-[40px] pl-[20px] rounded-[5px] border-[1px]">
+              {data?.role}
+            </p>
+          </div>
+          <div className="flex flex-row items-center gap-[30px]">
+            <span className="flex items-center justify-center rounded-[5px] w-[40px] h-[40px] text-[22px] border-[1px]">
+            <FaPhone />
+            </span>{" "}
+            <p className="flex items-center w-[250px] h-[40px] pl-[20px] rounded-[5px] border-[1px]">
+              {data?.phone_number}
+            </p>
+          </div>
         </div>
       </div>
     </div>
