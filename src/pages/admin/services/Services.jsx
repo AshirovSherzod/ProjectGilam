@@ -1,3 +1,4 @@
+import { useGetAllServicesQuery } from "../../../context/api/serviceApi";
 
 const Services = () => {
   const { data: servicesData } = useGetAllServicesQuery();
