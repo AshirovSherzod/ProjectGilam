@@ -110,17 +110,16 @@ const Profile = () => {
           Edit Password
         </button>
       </div>
-
-      {/* Edit Profile Modal */}
+      
       <CustomModal
         visible={isEditProfileModalVisible}
         onOk={handleEditProfileOk}
         onCancel={handleEditProfileCancel}
         title="Edit Profile"
-        okText="Yes" // OK tugmasini "Yes" ga o'zgartirish
-        cancelText="No" // Cancel tugmasini "No" ga o'zgartirish
-        okButtonProps={{ className: "bg-[#232627] text-white" }} // Yes tugmasi stili (Tailwind CSS)
-        cancelButtonProps={{ className: "bg-red-600 text-white" }} // No tugmasi stili (Tailwind CSS)
+        okText="Yes" 
+        cancelText="No" 
+        okButtonProps={{ className: "bg-[#232627] text-white" }}
+        cancelButtonProps={{ className: "bg-red-600 text-white" }}
       >
         <Form layout="vertical">
           <Form.Item label="Full Name">
