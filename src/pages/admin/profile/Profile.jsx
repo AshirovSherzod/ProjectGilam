@@ -1,4 +1,4 @@
-import { useGetProfileQuery } from "../../../context/api/userApi";
+import { useGetProfileQuery, useUpdateProfileMutation } from "../../../context/api/userApi";
 import img from "../../../assets/profile-img.png";
 import { GoGitBranch, GoPerson } from "react-icons/go";
 import { PiUserFocusFill } from "react-icons/pi";

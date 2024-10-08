@@ -1,16 +1,25 @@
 import { Space, Table } from "antd";
-import { useGetAllServicesQuery } from "../../../context/api/serviceApi";
+import {
+  useDeleteServiceMutation,
+  useGetAllServicesQuery,
+} from "../../../context/api/serviceApi";
+import { useState } from "react";
+import CustomModal from "../../../components/modal/CustomModal";
 
 const Services = () => {
   const { data: servicesData } = useGetAllServicesQuery();
-  console.log(servicesData);
+  const [deleteService, { data: deletedData, isError, isLoading, isSuccess }] =
+    useDeleteServiceMutation();
+  const [showModal, setShowModal] = useState(false);
+  console.log(showModal);
+
+  const handleSubmit = () => {};
 
   const columns = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      // render: (text) => <a>{text}</a>,
     },
     {
       title: "Tariffs",
@@ -31,10 +40,25 @@ const Services = () => {
       title: "Manage",
       key: "manage",
       render: (_, record) => (
-        <Space size="middle">
-          <a>Edit</a>
-          <a>Delete</a>
-        </Space>
+        <>
+          <Space size="middle">
+            <button>Edit</button>
+            <button onClick={() => setShowModal((prev) => !prev)}>
+              Delete{" "}
+            </button>
+          </Space>
+          <CustomModal
+            visible={showModal}
+            onOk={handleSubmit}
+            onCancel={() => setShowModal(false)}
+          >
+            <div className="flex flex-col gap-[30px] mt-[30px]">
+              <h2 className="text-[24px]">
+                Are you sure delete this information?
+              </h2>
+            </div>
+          </CustomModal>
+        </>
       ),
     },
   ];
