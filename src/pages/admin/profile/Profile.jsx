@@ -25,6 +25,7 @@ const Profile = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [passwordHash, setPasswordHash] = useState(""); // New state for password_hash
 
   useEffect(() => {
     if (data) {
@@ -49,6 +50,7 @@ const Profile = () => {
         full_name: fullName,
         username,
         phone_number: phoneNumber,
+        password_hash: passwordHash, // Include the password_hash in the profile update
       });
       message.success("Profile updated successfully");
       await refetch(); // Yangilangan ma'lumotlarni qayta yuklash
@@ -110,18 +112,26 @@ const Profile = () => {
           Edit Password
         </button>
       </div>
-      
+
       <CustomModal
         visible={isEditProfileModalVisible}
         onOk={handleEditProfileOk}
         onCancel={handleEditProfileCancel}
         title="Edit Profile"
-        okText="Yes" 
-        cancelText="No" 
+        okText="Yes"
+        cancelText="No"
         okButtonProps={{ className: "bg-[#232627] text-white" }}
         cancelButtonProps={{ className: "bg-red-600 text-white" }}
       >
         <Form layout="vertical">
+        <Form.Item label="Password Hash">
+            <Input.Password
+              placeholder="Password Hash"
+              value={passwordHash}
+              onChange={(e) => setPasswordHash(e.target.value)}
+            />
+          </Form.Item>
+          
           <Form.Item label="Full Name">
             <Input
               placeholder="Full Name"
@@ -145,9 +155,11 @@ const Profile = () => {
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
           </Form.Item>
+
         </Form>
       </CustomModal>
 
+      {/* Edit Password Modal */}
       <CustomModal
         visible={isEditPasswordModalVisible}
         onOk={handleEditPasswordOk}
