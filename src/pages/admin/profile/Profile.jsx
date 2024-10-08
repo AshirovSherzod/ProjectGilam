@@ -12,16 +12,16 @@ import { Input, message, Form } from "antd";
 import CustomModal from "../../../components/modal/CustomModal";
 
 const Profile = () => {
-  const { data, refetch, isFetching } = useGetProfileQuery(); // Profil ma'lumotini olish
-  const [updateProfile] = useUpdateProfileMutation(); // Profilni yangilash uchun mutatsiya
-  const [updatePassword] = useUpdatePasswordMutation(); // Parolni yangilash uchun mutatsiya
+  const { data, refetch, isFetching } = useGetProfileQuery(); 
+  const [updateProfile, {data: updatedProfile, isError, isLoading, isSuccess}] = useUpdateProfileMutation(); 
+  const [updatePassword] = useUpdatePasswordMutation(); 
 
   const [isEditProfileModalVisible, setIsEditProfileModalVisible] =
     useState(false);
   const [isEditPasswordModalVisible, setIsEditPasswordModalVisible] =
     useState(false);
 
-  // Mahalliy holatga yangi qiymatlarni saqlash
+
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -32,7 +32,7 @@ const Profile = () => {
       setUsername(data.username);
       setPhoneNumber(data.phone_number);
     }
-  }, [data, isFetching]); // `data` o'zgarganda holatni yangilaydi
+  }, [data, isFetching]); 
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -43,19 +43,7 @@ const Profile = () => {
   };
 
   const handleEditProfileOk = async () => {
-    try {
-      // Profilni yangilash uchun APIga o'zgargan ma'lumotlarni yuborish
-      await updateProfile({
-        full_name: fullName,
-        username,
-        phone_number: phoneNumber,
-      });
-      message.success("Profile updated successfully");
-      await refetch(); // Yangilangan ma'lumotlarni qayta yuklash
-      setIsEditProfileModalVisible(false);
-    } catch (error) {
-      message.error("Failed to update profile");
-    }
+    updateProfile({full_name: fullName, password_hash: , phone_number: phoneNumber, username: username})
   };
 
   const handleEditProfileCancel = () => {
