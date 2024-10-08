@@ -38,7 +38,6 @@ export const serviceApi = api2.injectEndpoints({
       query: (id) => ({
         url: `/api/service/${id}`,
         method: "DELETE",
-        body,
       }),
       invalidatesTags: ["Services"],
     }),

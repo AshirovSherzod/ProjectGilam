@@ -44,20 +44,7 @@ const Profile = () => {
   };
 
   const handleEditProfileOk = async () => {
-    try {
-      // Profilni yangilash uchun APIga o'zgargan ma'lumotlarni yuborish
-      await updateProfile({
-        full_name: fullName,
-        username,
-        phone_number: phoneNumber,
-        password_hash: passwordHash, // Include the password_hash in the profile update
-      });
-      message.success("Profile updated successfully");
-      await refetch(); // Yangilangan ma'lumotlarni qayta yuklash
-      setIsEditProfileModalVisible(false);
-    } catch (error) {
-      message.error("Failed to update profile");
-    }
+    updateProfile({full_name: fullName, password_hash: passwordHash, phone_number: phoneNumber, username: username})
   };
 
   const handleEditProfileCancel = () => {

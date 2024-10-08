@@ -8,12 +8,17 @@ import CustomModal from "../../../components/modal/CustomModal";
 
 const Services = () => {
   const { data: servicesData } = useGetAllServicesQuery();
+  const [id, setId] = useState(0);
   const [deleteService, { data: deletedData, isError, isLoading, isSuccess }] =
     useDeleteServiceMutation();
   const [showModal, setShowModal] = useState(false);
   console.log(showModal);
 
-  const handleSubmit = () => {};
+  // const handleDelete = () => {
+  //   console.log("ok");
+
+  //   deleteService({ id: id });
+  // };
 
   const columns = [
     {
@@ -42,22 +47,15 @@ const Services = () => {
       render: (_, record) => (
         <>
           <Space size="middle">
-            <button>Edit</button>
-            <button onClick={() => setShowModal((prev) => !prev)}>
+            <button>Edit {record.id}</button>
+            <button
+              onClick={() => {
+                deleteService(record.id);
+              }}
+            >
               Delete{" "}
             </button>
           </Space>
-          <CustomModal
-            visible={showModal}
-            onOk={handleSubmit}
-            onCancel={() => setShowModal(false)}
-          >
-            <div className="flex flex-col gap-[30px] mt-[30px]">
-              <h2 className="text-[24px]">
-                Are you sure delete this information?
-              </h2>
-            </div>
-          </CustomModal>
         </>
       ),
     },
@@ -69,7 +67,7 @@ const Services = () => {
       tariffs: `${service.tariffs}`,
       price: `${service.price}`,
       description: `${service.description}`,
-      id: `${service}`,
+      id: `${service.id}`,
     })) || [];
 
   return (
@@ -80,6 +78,15 @@ const Services = () => {
         </button>
       </div>
       <Table columns={columns} dataSource={data} />
+      {/* <CustomModal
+        visible={showModal}
+        onOk={handleDelete}
+        onCancel={() => setShowModal(false)}
+      >
+        <div className="flex flex-col gap-[30px] mt-[30px]">
+          <h2 className="text-[24px]">Are you sure delete this information?</h2>
+        </div>
+      </CustomModal> */}
     </div>
   );
 };

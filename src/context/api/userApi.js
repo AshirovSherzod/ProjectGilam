@@ -8,7 +8,7 @@ export const userApi = api1.injectEndpoints({
         method: "GET",
         body,
       }),
-      invalidatesTags: ["Profile"],
+      invalidatesTags: ["Profile", "User"],
     }),
     updateProfile: build.mutation({
       query: (body) => ({
