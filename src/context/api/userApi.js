@@ -16,7 +16,7 @@ export const userApi = api1.injectEndpoints({
         method: "PUT",
         body,
       }),
-      invalidatesTags: ["Company"],
+      invalidatesTags: ["User"],
     }),
     updatePassword: build.mutation({
       query: (body) => ({
