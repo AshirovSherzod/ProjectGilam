@@ -1,6 +1,3 @@
-import React from "react";
-import { Space, Table, Tag } from "antd";
-import { useGetAllServicesQuery } from "../../../context/api/serviceApi";
 
 const Services = () => {
   const { data: servicesData } = useGetAllServicesQuery();
