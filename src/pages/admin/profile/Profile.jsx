@@ -11,10 +11,10 @@ import { useState, useEffect } from "react";
 import { Input, message, Form } from "antd";
 import CustomModal from "../../../components/modal/CustomModal";
 
-const Profile = () => {
-  const { data, refetch, isFetching } = useGetProfileQuery(); // Profil ma'lumotini olish
-  const [updateProfile] = useUpdateProfileMutation(); // Profilni yangilash uchun mutatsiya
-  const [updatePassword] = useUpdatePasswordMutation(); // Parolni yangilash uchun mutatsiya
+const Profile = () => {    
+  const { data, refetch, isFetching } = useGetProfileQuery();
+  const [updateProfile] = useUpdateProfileMutation();
+  const [updatePassword] = useUpdatePasswordMutation();
 
   const [isEditProfileModalVisible, setIsEditProfileModalVisible] =
     useState(false);
@@ -25,7 +25,7 @@ const Profile = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [passwordHash, setPasswordHash] = useState(""); // New state for password_hash
+  const [passwordHash, setPasswordHash] = useState("");
 
   useEffect(() => {
     if (data) {
@@ -33,7 +33,7 @@ const Profile = () => {
       setUsername(data.username);
       setPhoneNumber(data.phone_number);
     }
-  }, [data, isFetching]); // `data` o'zgarganda holatni yangilaydi
+  }, [data, isFetching]);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -45,15 +45,14 @@ const Profile = () => {
 
   const handleEditProfileOk = async () => {
     try {
-      // Profilni yangilash uchun APIga o'zgargan ma'lumotlarni yuborish
       await updateProfile({
         full_name: fullName,
         username,
         phone_number: phoneNumber,
-        password_hash: passwordHash, // Include the password_hash in the profile update
+        password_hash: passwordHash,
       });
       message.success("Profile updated successfully");
-      await refetch(); // Yangilangan ma'lumotlarni qayta yuklash
+      await refetch();
       setIsEditProfileModalVisible(false);
     } catch (error) {
       message.error("Failed to update profile");
@@ -77,7 +76,6 @@ const Profile = () => {
       return;
     }
     try {
-      // Parolni yangilash uchun APIga o'zgargan ma'lumotlarni yuborish
       await updatePassword({
         current_password: currentPassword,
         new_password: newPassword,
@@ -131,7 +129,7 @@ const Profile = () => {
               onChange={(e) => setPasswordHash(e.target.value)}
             />
           </Form.Item>
-          
+
           <Form.Item label="Full Name">
             <Input
               placeholder="Full Name"
@@ -159,7 +157,6 @@ const Profile = () => {
         </Form>
       </CustomModal>
 
-      {/* Edit Password Modal */}
       <CustomModal
         visible={isEditPasswordModalVisible}
         onOk={handleEditPasswordOk}
@@ -207,7 +204,7 @@ const Profile = () => {
               <GoPerson />
             </span>
             <p className="flex items-center w-[250px] h-[40px] pl-[20px] rounded-[5px] border-[1px]">
-              {fullName} {/* Ma'lumotlar holat orqali aks ettiriladi */}
+              {fullName}
             </p>
           </div>
           <div className="flex flex-row items-center gap-[30px]">
@@ -215,7 +212,7 @@ const Profile = () => {
               <PiUserFocusFill />
             </span>
             <p className="flex items-center w-[250px] h-[40px] pl-[20px] rounded-[5px] border-[1px]">
-              {username} {/* Ma'lumotlar holat orqali aks ettiriladi */}
+              {username}
             </p>
           </div>
           <div className="flex flex-row items-center gap-[30px]">
@@ -231,7 +228,7 @@ const Profile = () => {
               <FaPhone />
             </span>
             <p className="flex items-center w-[250px] h-[40px] pl-[20px] rounded-[5px] border-[1px]">
-              {phoneNumber} {/* Ma'lumotlar holat orqali aks ettiriladi */}
+              {phoneNumber}
             </p>
           </div>
         </div>
