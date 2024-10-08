@@ -1,3 +1,4 @@
+import { Space, Table } from "antd";
 import { useGetAllServicesQuery } from "../../../context/api/serviceApi";
 
 const Services = () => {
