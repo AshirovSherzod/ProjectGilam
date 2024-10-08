@@ -4,13 +4,15 @@ import { GoGitBranch, GoPerson } from "react-icons/go";
 import { PiUserFocusFill } from "react-icons/pi";
 import { FaPhone } from "react-icons/fa";
 import { useState } from "react";
-import { Modal,  Input } from "antd";
+import { Input } from "antd";
+import CustomModal from "../../../components/modal/CustomModal";
 
 const Profile = () => {
-  const [change, setChange] = useState(0);
   const { data } = useGetProfileQuery();
-  const [isEditProfileModalVisible, setIsEditProfileModalVisible] = useState(false);
-  const [isEditPasswordModalVisible, setIsEditPasswordModalVisible] = useState(false);
+  const [isEditProfileModalVisible, setIsEditProfileModalVisible] =
+    useState(false);
+  const [isEditPasswordModalVisible, setIsEditPasswordModalVisible] =
+    useState(false);
 
   const showEditProfileModal = () => {
     setIsEditProfileModalVisible(true);
@@ -57,28 +59,28 @@ const Profile = () => {
       </div>
 
       {/* Edit Profile Modal */}
-      <Modal
-        title="Edit Profile"
+      <CustomModal
         visible={isEditProfileModalVisible}
         onOk={handleEditProfileOk}
         onCancel={handleEditProfileCancel}
+        title="Edit Profile"
       >
         <Input placeholder="Full Name" defaultValue={data?.full_name} />
         <Input placeholder="Username" defaultValue={data?.username} />
         <Input placeholder="Phone Number" defaultValue={data?.phone_number} />
-      </Modal>
+      </CustomModal>
 
       {/* Edit Password Modal */}
-      <Modal
-        title="Edit Password"
+      <CustomModal
         visible={isEditPasswordModalVisible}
         onOk={handleEditPasswordOk}
         onCancel={handleEditPasswordCancel}
+        title="Edit Password"
       >
         <Input.Password placeholder="Current Password" />
         <Input.Password placeholder="New Password" />
         <Input.Password placeholder="Confirm New Password" />
-      </Modal>
+      </CustomModal>
 
       <div className="flex flex-row h-[400px] bg-white gap-[20px] py-[30px] px-[20px] border-[2px] rounded-[5px]">
         <div className="h-[200px] w-[200px] flex">
