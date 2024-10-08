@@ -1,4 +1,3 @@
-
 const Services = () => {
   const { data: servicesData } = useGetAllServicesQuery();
   console.log(servicesData);
