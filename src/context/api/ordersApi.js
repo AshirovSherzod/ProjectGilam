@@ -3,20 +3,18 @@ import { api2 } from "./index";
 export const ordersApi = api2.injectEndpoints({
   endpoints: (build) => ({
     getAllOrders: build.query({
-      query: (body) => ({
+      query: () => ({
         url: "/api/orders",
         method: "GET",
-        body,
       }),
-      invalidatesTags: ["Orders"],
+      providesTags: ["Orders"],
     }),
     getOrder: build.query({
-      query: ({ body, id }) => ({
-        url: `/api/orders${id}`,
+      query: (id) => ({
+        url: `/api/order/${id}`,
         method: "GET",
-        body,
       }),
-      invalidatesTags: ["Orders"],
+      providesTags: ["Orders"],
     }),
     createOrders: build.mutation({
       query: (body) => ({
@@ -27,7 +25,7 @@ export const ordersApi = api2.injectEndpoints({
       invalidatesTags: ["Orders"],
     }),
     updateOrders: build.mutation({
-      query: (id) => ({
+      query: ({ id, body }) => ({
         url: `/api/order/${id}`,
         method: "PUT",
         body,
@@ -38,7 +36,6 @@ export const ordersApi = api2.injectEndpoints({
       query: (id) => ({
         url: `/api/order/${id}`,
         method: "DELETE",
-        body,
       }),
       invalidatesTags: ["Orders"],
     }),
