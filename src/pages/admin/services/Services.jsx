@@ -168,7 +168,6 @@ const Services = () => {
         )}
       </Modal>
 
-      {/* Create Service Modal */}
       <Modal
         title="Create Service"
         visible={createModalVisible}

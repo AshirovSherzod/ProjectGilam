@@ -2,31 +2,34 @@ import {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useUpdatePasswordMutation,
-} from "../../../context/api/userApi";
-import img from "../../../assets/profile-img.png";
-import { GoGitBranch, GoPerson } from "react-icons/go";
-import { PiUserFocusFill } from "react-icons/pi";
-import { FaPhone } from "react-icons/fa";
-import { useState, useEffect } from "react";
-import { Input, message, Form } from "antd";
-import CustomModal from "../../../components/modal/CustomModal";
+} from "../../../context/api/userApi"; // API chaqiruvlari
+import img from "../../../assets/profile-img.png"; // Profil rasmi
+import { GoGitBranch, GoPerson } from "react-icons/go"; // Ikonalar
+import { PiUserFocusFill } from "react-icons/pi"; // Ikonalar
+import { FaPhone } from "react-icons/fa"; // Ikonalar
+import { useState, useEffect } from "react"; // React hooklari
+import { Input, message, Form } from "antd"; // AntDesign komponentlari
+import CustomModal from "../../../components/modal/CustomModal"; // Maxsus modal komponent
 
-const Profile = () => {    
+const Profile = () => {
+  // Ma'lumot olish uchun useGetProfileQuery dan foydalanamiz
   const { data, refetch, isFetching } = useGetProfileQuery();
-  const [updateProfile] = useUpdateProfileMutation();
-  const [updatePassword] = useUpdatePasswordMutation();
+  const [updateProfile] = useUpdateProfileMutation(); // Profil yangilash uchun
+  const [updatePassword] = useUpdatePasswordMutation(); // Parolni yangilash uchun
 
+  // Modalni boshqarish uchun useState
   const [isEditProfileModalVisible, setIsEditProfileModalVisible] =
     useState(false);
   const [isEditPasswordModalVisible, setIsEditPasswordModalVisible] =
     useState(false);
 
-
+  // Profil malumotlarini saqlash uchun state
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [passwordHash, setPasswordHash] = useState("");
 
+  // Profil ma'lumotlari kelganda state'larni yangilash
   useEffect(() => {
     if (data) {
       setFullName(data.full_name);
@@ -35,14 +38,17 @@ const Profile = () => {
     }
   }, [data, isFetching]);
 
+  // Parol o'zgartirish uchun state
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
+  // Profilni tahrirlash modalini ko'rsatish funksiyasi
   const showEditProfileModal = () => {
     setIsEditProfileModalVisible(true);
   };
 
+  // Profil yangilashni tasdiqlash funksiyasi
   const handleEditProfileOk = async () => {
     try {
       await updateProfile({
@@ -50,19 +56,26 @@ const Profile = () => {
         username,
         phone_number: phoneNumber,
         password_hash: passwordHash,
-      });
+      }).unwrap();
       message.success("Profile updated successfully");
-      await refetch();
-      setIsEditProfileModalVisible(false);
+      await refetch(); // Profil ma'lumotlarini yangilash
+      setIsEditProfileModalVisible(false); // Modalni yopish
     } catch (error) {
-      message.error("Failed to update profile");
+      // Agar backend password_hash bilan bog'liq xatolik yuborsa, uni ko'rsatamiz
+      if (error?.data?.error === "Invalid password hash") {
+        message.error("Failed to update profile: Invalid password hash");
+      } else {
+        message.error(`Failed to update profile: ${error?.message}`);
+      }
     }
   };
 
+  // Profilni tahrirlashni bekor qilish funksiyasi
   const handleEditProfileCancel = () => {
     setIsEditProfileModalVisible(false);
   };
 
+  // Parolni tahrirlash modalini ko'rsatish funksiyasi
   const showEditPasswordModal = () => {
     setCurrentPassword("");
     setNewPassword("");
@@ -70,23 +83,36 @@ const Profile = () => {
     setIsEditPasswordModalVisible(true);
   };
 
+  // Parolni yangilashni tasdiqlash funksiyasi
   const handleEditPasswordOk = async () => {
     if (newPassword !== confirmNewPassword) {
       message.error("Passwords do not match");
       return;
     }
+
     try {
-      await updatePassword({
+      const result = await updatePassword({
         current_password: currentPassword,
         new_password: newPassword,
-      });
+      }).unwrap();
+
       message.success("Password updated successfully");
       setIsEditPasswordModalVisible(false);
     } catch (error) {
-      message.error("Failed to update password");
+      // Xatolik tafsilotlarini ko'rsatish
+      if (error?.data?.error === "Incorrect current password") {
+        message.error("Failed to update password: Incorrect current password");
+      } else if (error?.data?.error === "Password too weak") {
+        message.error("Failed to update password: Password too weak");
+      } else {
+        message.error(
+          `Failed to update password: ${error?.message || "Unknown error"}`
+        );
+      }
     }
   };
 
+  // Parolni yangilashni bekor qilish funksiyasi
   const handleEditPasswordCancel = () => {
     setIsEditPasswordModalVisible(false);
   };
@@ -122,7 +148,7 @@ const Profile = () => {
         cancelButtonProps={{ className: "bg-red-600 text-white" }}
       >
         <Form layout="vertical">
-        <Form.Item label="Password Hash">
+          <Form.Item label="Password Hash">
             <Input.Password
               placeholder="Password Hash"
               value={passwordHash}
@@ -153,7 +179,6 @@ const Profile = () => {
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
           </Form.Item>
-
         </Form>
       </CustomModal>
 
