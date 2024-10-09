@@ -6,7 +6,10 @@ export const serviceApi = api2.injectEndpoints({
       query: (body) => ({
         url: "/api/services",
         method: "GET",
-        body,
+        params: {
+          page: body.page,
+          limit: body.limit
+        },
       }),
       invalidatesTags: ["Services"],
     }),

@@ -1,22 +1,45 @@
-import { Space, Table, Modal, message, Input, Form, Button } from "antd";
+import {
+  Space,
+  Table,
+  Modal,
+  message,
+  Input,
+  Form,
+  Button,
+  Pagination,
+} from "antd";
 import {
   useDeleteServiceMutation,
   useGetAllServicesQuery,
   useUpdateServiceMutation,
-  useCreateServiceMutation, // Import create service mutation
+  useCreateServiceMutation,
 } from "../../../context/api/serviceApi";
 import { useState } from "react";
+import { useGetValue } from "../../../hooks/useGetValue";
+
+const initialState = {
+  name: "",
+  traffic: "",
+  price: 0,
+  description: "",
+};
 
 const Services = () => {
-  const { data: servicesData, refetch } = useGetAllServicesQuery();
+  const { data: servicesData, refetch } = useGetAllServicesQuery({
+    limit: 10,
+    page: 1,
+  });
+  console.log(servicesData);
+  
   const [deleteService, { isLoading: isDeleting }] = useDeleteServiceMutation();
   const [updateService, { isLoading: isUpdating }] = useUpdateServiceMutation();
-  const [createService] = useCreateServiceMutation(); // For creating a new service
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [createModalVisible, setCreateModalVisible] = useState(false); // For create modal
-  const [editingService, setEditingService] = useState(null); // Store service being edited
+  const [createService, { isLoading: isCreating }] = useCreateServiceMutation();
+  const { formData, handleChange } = useGetValue(initialState);
 
-  // Handle delete with confirmation modal
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [editingService, setEditingService] = useState(null);
+
   const handleDelete = (serviceId) => {
     Modal.confirm({
       title: "Are you sure you want to delete this service?",
@@ -36,37 +59,35 @@ const Services = () => {
     });
   };
 
-  // Handle edit service
   const handleEdit = (service) => {
-    setEditingService(service); // Set the service data to be edited
-    setEditModalVisible(true); // Show the edit modal
+    setEditingService(service);
+    setEditModalVisible(true);
   };
 
-  // Handle submit edit changes
   const handleEditSubmit = async (values) => {
     try {
-      await updateService({ id: editingService.id, ...values }); // Update the service data
+      await updateService({ id: editingService.id, ...values });
       message.success("Service updated successfully");
-      refetch(); // Refetch services to refresh the list
-      setEditModalVisible(false); // Close the modal
+      refetch();
+      setEditModalVisible(false);
     } catch (error) {
       message.error("Failed to update service");
     }
   };
 
-  // Handle create service
-  const handleCreate = () => {
-    setCreateModalVisible(true); // Show the create modal
-  };
-
-  // Handle submit create service
-  const handleCreateSubmit = async (values) => {
+  const handleCreateSubmit = async (e) => {
+    e.preventDefault();
+    let newData = {
+      name: formData.name,
+      traffic: formData.traffic,
+      price: +formData.price,
+      description: formData.description,
+    };
     try {
-      await createService(values); // Create the new service
+      createService(newData);
       message.success("Service created successfully");
-      refetch(); // Refetch services to refresh the list
-      setCreateModalVisible(false); // Close the create modal
-    } catch (error) {
+      refetch();
+    } catch {
       message.error("Failed to create service");
     }
   };
@@ -122,7 +143,7 @@ const Services = () => {
     <div className="flex flex-col gap-[40px] mt-[40px] mx-[15px]">
       <div className="flex">
         <button
-          onClick={handleCreate}
+          onClick={() => setCreateModalVisible(true)}
           className="w-[120px] h-[35px] bg-[#232627] text-white rounded-[5px]"
         >
           Create Service
@@ -132,16 +153,18 @@ const Services = () => {
         columns={columns}
         dataSource={data}
         rowKey="id"
-        loading={isDeleting || isUpdating}
+        loading={isDeleting || isUpdating || isCreating}
+        pagination={true}
+        
       />
 
-      {/* Edit Service Modal */}
+      {/* { edit modal } */}
       <Modal
         title="Edit Service"
         visible={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
         onOk={() => {
-          document.getElementById("editServiceForm").submit(); // Trigger form submit
+          document.getElementById("editServiceForm").submit();
         }}
         confirmLoading={isUpdating}
       >
@@ -168,37 +191,95 @@ const Services = () => {
         )}
       </Modal>
 
-      {/* Create Service Modal */}
+      {/* { create modal } */}
       <Modal
         title="Create Service"
         visible={createModalVisible}
         onCancel={() => setCreateModalVisible(false)}
-        onOk={() => {
-          document.getElementById("createServiceForm").submit(); // Trigger form submit
-        }}
+        footer={null}
       >
-        <Form
-          id="createServiceForm"
-          layout="vertical"
-          onFinish={handleCreateSubmit}
-        >
-          <Form.Item label="Name" name="name" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Tariffs" name="tariffs" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Price" name="price" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[{ required: true }]}
+        <form action="" className="space-y-4" onSubmit={handleCreateSubmit}>
+          <div className="flex flex-col">
+            <label
+              htmlFor="name"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={(e) => handleChange(e)}
+              className="border border-gray-300 rounded-lg p-2 h-[32px] focus:ring focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label
+              htmlFor="traffic"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Tariffs
+            </label>
+            <input
+              type="text"
+              id="traffic"
+              name="traffic"
+              value={formData.tariffs}
+              onChange={(e) => handleChange(e)}
+              className="border border-gray-300 rounded-lg p-2 h-[32px] focus:ring focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label
+              htmlFor="price"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Price
+            </label>
+            <input
+              type="text"
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={(e) => handleChange(e)}
+              className="border border-gray-300 rounded-lg p-2 h-[32px] focus:ring focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label
+              htmlFor="description"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Description
+            </label>
+            <input
+              type="text"
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={(e) => handleChange(e)}
+              className="border border-gray-300 rounded-lg p-2 h-[32px] focus:ring focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{
+              backgroundColor: "#232627",
+              borderColor: "#232627",
+              width: "100%",
+            }}
           >
-            <Input.TextArea />
-          </Form.Item>
-        </Form>
+            Submit
+          </Button>
+          {/* <button>Submit</button> */}
+        </form>
       </Modal>
     </div>
   );

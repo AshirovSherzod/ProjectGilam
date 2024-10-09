@@ -8,7 +8,6 @@ import { logout } from "../../context/slices/authSlice";
 const Header = () => {
   const { data } = useGetProfileQuery();
   const dispatch = useDispatch();
-  console.log(data);
 
   return (
     <div
