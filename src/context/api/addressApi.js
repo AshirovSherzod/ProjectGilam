@@ -3,10 +3,8 @@ import { api2 } from "./index";
 export const addressApi = api2.injectEndpoints({
   endpoints: (build) => ({
     getAddress: build.query({
-      query: ({ body, id }) => ({
-        url: `/api/company${id}`,
-        method: "GET",
-        body,
+      query: (id) => ({
+        url: `/api/company/${id}`,
       }),
       invalidatesTags: ["Address"],
     }),
@@ -19,7 +17,7 @@ export const addressApi = api2.injectEndpoints({
       invalidatesTags: ["Address"],
     }),
     updateAddress: build.mutation({
-      query: (id) => ({
+      query: ({ id, body }) => ({
         url: `/api/company/${id}`,
         method: "PUT",
         body,
@@ -30,7 +28,6 @@ export const addressApi = api2.injectEndpoints({
       query: (id) => ({
         url: `/api/company/${id}`,
         method: "DELETE",
-        body,
       }),
       invalidatesTags: ["Address"],
     }),

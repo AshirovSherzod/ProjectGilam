@@ -2,120 +2,32 @@ import {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useUpdatePasswordMutation,
-} from "../../../context/api/userApi"; // API chaqiruvlari
-import img from "../../../assets/profile-img.png"; // Profil rasmi
-import { GoGitBranch, GoPerson } from "react-icons/go"; // Ikonalar
-import { PiUserFocusFill } from "react-icons/pi"; // Ikonalar
-import { FaPhone } from "react-icons/fa"; // Ikonalar
-import { useState, useEffect } from "react"; // React hooklari
-import { Input, message, Form } from "antd"; // AntDesign komponentlari
-import CustomModal from "../../../components/modal/CustomModal"; // Maxsus modal komponent
+} from "../../../context/api/userApi";
+import img from "../../../assets/profile-img.png";
+import { GoGitBranch, GoPerson } from "react-icons/go";
+import { PiUserFocusFill } from "react-icons/pi";
+import { FaPhone } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { Input, message, Form, Modal, Button } from "antd";
+import { useGetValue } from "../../../hooks/useGetValue";
+// import CustomModal from "../../../components/modal/CustomModal";
 
 const Profile = () => {
-  // Ma'lumot olish uchun useGetProfileQuery dan foydalanamiz
-  const { data, refetch, isFetching } = useGetProfileQuery();
-  const [updateProfile] = useUpdateProfileMutation(); // Profil yangilash uchun
-  const [updatePassword] = useUpdatePasswordMutation(); // Parolni yangilash uchun
+  const { data, refetch } = useGetProfileQuery();
+  const [updateProfile] = useUpdateProfileMutation();
+  const [updatePassword] = useUpdatePasswordMutation();
 
-  // Modalni boshqarish uchun useState
-  const [isEditProfileModalVisible, setIsEditProfileModalVisible] =
-    useState(false);
-  const [isEditPasswordModalVisible, setIsEditPasswordModalVisible] =
-    useState(false);
-
-  // Profil malumotlarini saqlash uchun state
-  const [fullName, setFullName] = useState("");
-  const [username, setUsername] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [passwordHash, setPasswordHash] = useState(""); // New state for password_hash
-
-  // Profil ma'lumotlari kelganda state'larni yangilash
-  useEffect(() => {
-    if (data) {
-      setFullName(data.full_name);
-      setUsername(data.username);
-      setPhoneNumber(data.phone_number);
-    }
-  }, [data, isFetching]); 
-
-  // Parol o'zgartirish uchun state
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
-
-  // Profilni tahrirlash modalini ko'rsatish funksiyasi
-  const showEditProfileModal = () => {
-    setIsEditProfileModalVisible(true);
+  const initialState = {
+    full_name: data?.full_name,
+    password_hash: 0,
+    phone_number: data?.phone_number,
+    username: data?.username,
   };
-
-  // Profil yangilashni tasdiqlash funksiyasi
-  const handleEditProfileOk = async () => {
-    try {
-      await updateProfile({
-        full_name: fullName,
-        username,
-        phone_number: phoneNumber,
-        password_hash: passwordHash,
-      }).unwrap();
-      message.success("Profile updated successfully");
-      await refetch(); // Profil ma'lumotlarini yangilash
-      setIsEditProfileModalVisible(false); // Modalni yopish
-    } catch (error) {
-      // Agar backend password_hash bilan bog'liq xatolik yuborsa, uni ko'rsatamiz
-      if (error?.data?.error === "Invalid password hash") {
-        message.error("Failed to update profile: Invalid password hash");
-      } else {
-        message.error(`Failed to update profile: ${error?.message}`);
-      }
-    }
-  };
-
-  // Profilni tahrirlashni bekor qilish funksiyasi
-  const handleEditProfileCancel = () => {
-    setIsEditProfileModalVisible(false);
-  };
-
-  // Parolni tahrirlash modalini ko'rsatish funksiyasi
-  const showEditPasswordModal = () => {
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmNewPassword("");
-    setIsEditPasswordModalVisible(true);
-  };
-
-  // Parolni yangilashni tasdiqlash funksiyasi
-  const handleEditPasswordOk = async () => {
-    if (newPassword !== confirmNewPassword) {
-      message.error("Passwords do not match");
-      return;
-    }
-
-    try {
-      const result = await updatePassword({
-        current_password: currentPassword,
-        new_password: newPassword,
-      }).unwrap();
-
-      message.success("Password updated successfully");
-      setIsEditPasswordModalVisible(false);
-    } catch (error) {
-      // Xatolik tafsilotlarini ko'rsatish
-      if (error?.data?.error === "Incorrect current password") {
-        message.error("Failed to update password: Incorrect current password");
-      } else if (error?.data?.error === "Password too weak") {
-        message.error("Failed to update password: Password too weak");
-      } else {
-        message.error(
-          `Failed to update password: ${error?.message || "Unknown error"}`
-        );
-      }
-    }
-  };
-
-  // Parolni yangilashni bekor qilish funksiyasi
-  const handleEditPasswordCancel = () => {
-    setIsEditPasswordModalVisible(false);
-  };
+  console.log(initialState);
+  
+  const [editPasswordModal, setEditPasswordModal] = useState(false);
+  const [editProfileModal, setEditProfileModal] = useState(false);
+  const { formData, handleChange } = useGetValue(initialState);
 
   return (
     <div
@@ -124,101 +36,171 @@ const Profile = () => {
     >
       <div className=" flex flex-row gap-[20px]">
         <button
-          onClick={showEditProfileModal}
+          onClick={() => setEditProfileModal(true)}
           className=" w-[120px] h-[35px] bg-[rgb(35,38,39)] text-white text-[14px] rounded-[8px] border-[1px]"
         >
           Edit Profile
         </button>
         <button
-          onClick={showEditPasswordModal}
+          onClick={() => setEditPasswordModal(true)}
           className=" w-[120px] h-[35px] bg-[#232627] text-white text-[14px] rounded-[8px]"
         >
           Edit Password
         </button>
       </div>
 
-      <CustomModal
-        visible={isEditProfileModalVisible}
-        onOk={handleEditProfileOk}
-        onCancel={handleEditProfileCancel}
+      <Modal
+        visible={editProfileModal}
+        // onOk={handleEditProfileOk}
+        onCancel={() => setEditProfileModal(false)}
         title="Edit Profile"
-        okText="Yes"
-        cancelText="No"
-        okButtonProps={{ className: "bg-[#232627] text-white" }}
-        cancelButtonProps={{ className: "bg-red-600 text-white" }}
+        footer={false}
       >
-        <Form layout="vertical">
-          <Form.Item label="Password Hash">
+        <form action="" className="space-y-4">
+          <div className="flex flex-col">
+            <label
+              htmlFor="currentPassword"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Current Password
+            </label>
             <Input.Password
-              placeholder="Password Hash"
-              value={passwordHash}
-              onChange={(e) => setPasswordHash(e.target.value)}
+              id="currentPassword"
+              name="currentPassword"
+              className="border border-gray-300 rounded-lg h-[32px] focus:border-[#232627] focus:ring-0 outline-none"
             />
-          </Form.Item>
-          
-          <Form.Item label="Full Name">
-            <Input
-              placeholder="Full Name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-            />
-          </Form.Item>
+          </div>
 
-          <Form.Item label="Username">
-            <Input
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+          <div className="flex flex-col">
+            <label
+              htmlFor="fullName"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              value={formData.full_name}
+              className="border border-gray-300 rounded-lg p-2 h-[32px] focus:border-[#232627] focus:ring-0 outline-none"
             />
-          </Form.Item>
+          </div>
 
-          <Form.Item label="Phone Number">
-            <Input
-              placeholder="Phone Number"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+          <div className="flex flex-col">
+            <label
+              htmlFor="username"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={data?.username}
+              className="border border-gray-300 rounded-lg p-2 h-[32px] focus:border-[#232627] focus:ring-0 outline-none"
             />
-          </Form.Item>
-        </Form>
-      </CustomModal>
+          </div>
 
-      {/* Edit Password Modal */}
-      <CustomModal
-        visible={isEditPasswordModalVisible}
-        onOk={handleEditPasswordOk}
-        onCancel={handleEditPasswordCancel}
+          <div className="flex flex-col">
+            <label
+              htmlFor="phoneNumber"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Phone Number
+            </label>
+            <input
+              type="text"
+              id="phoneNumber"
+              name="phoneNumber"
+              value={data?.phone_number}
+              className="border border-gray-300 rounded-lg p-2 h-[32px] focus:border-[#232627] focus:ring-0 outline-none"
+            />
+          </div>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{
+              backgroundColor: "#232627",
+              borderColor: "#232627",
+              width: "100%",
+            }}
+          >
+            Submit
+          </Button>
+        </form>
+      </Modal>
+
+      <Modal
+        visible={editPasswordModal}
+        onCancel={() => setEditPasswordModal(false)}
         title="Edit Password"
-        okText="Yes"
-        cancelText="No"
-        okButtonProps={{ className: "bg-[#232627] text-white" }}
-        cancelButtonProps={{ className: "bg-red-600 text-white" }}
+        footer={false}
       >
-        <Form layout="vertical">
-          <Form.Item label="Current Password">
-            <Input.Password
-              placeholder="Current Password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
+        <form action="" className="space-y-4">
+          <div className="flex flex-col">
+            <label
+              htmlFor="currentPassword"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Current Password
+            </label>
+            <input
+              type="password"
+              id="currentPassword"
+              name="currentPassword"
+              className="border border-gray-300 rounded-lg p-2 h-[32px] focus:border-[#232627] focus:ring-0 outline-none"
+              style={{ outline: "none", border: "1px solid gray" }}
             />
-          </Form.Item>
+          </div>
 
-          <Form.Item label="New Password">
-            <Input.Password
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+          <div className="flex flex-col">
+            <label
+              htmlFor="newPassword"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              New Password
+            </label>
+            <input
+              type="password"
+              id="newPassword"
+              name="newPassword"
+              className="border border-gray-300 rounded-lg p-2 h-[32px] focus:border-[#232627] focus:ring-0 outline-none"
+              style={{ outline: "none", border: "1px solid gray" }}
             />
-          </Form.Item>
+          </div>
 
-          <Form.Item label="Confirm New Password">
-            <Input.Password
-              placeholder="Confirm New Password"
-              value={confirmNewPassword}
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
+          <div className="flex flex-col">
+            <label
+              htmlFor="confirmNewPassword"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Confirm New Password
+            </label>
+            <input
+              type="password"
+              id="confirmNewPassword"
+              name="confirmNewPassword"
+              className="border border-gray-300 rounded-lg p-2 h-[32px] focus:border-[#232627] focus:ring-0 outline-none"
+              style={{ outline: "none", border: "1px solid gray" }}
             />
-          </Form.Item>
-        </Form>
-      </CustomModal>
+          </div>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{
+              backgroundColor: "#232627",
+              borderColor: "#232627",
+              width: "100%",
+            }}
+          >
+            Submit
+          </Button>
+        </form>
+      </Modal>
 
       <div className="flex flex-row h-[400px] bg-white gap-[20px] py-[30px] px-[20px] border-[2px] rounded-[5px]">
         <div className="h-[200px] w-[200px] flex">
@@ -230,7 +212,7 @@ const Profile = () => {
               <GoPerson />
             </span>
             <p className="flex items-center w-[250px] h-[40px] pl-[20px] rounded-[5px] border-[1px]">
-              {fullName} {/* Ma'lumotlar holat orqali aks ettiriladi */}
+              {data?.full_name}
             </p>
           </div>
           <div className="flex flex-row items-center gap-[30px]">
@@ -238,7 +220,7 @@ const Profile = () => {
               <PiUserFocusFill />
             </span>
             <p className="flex items-center w-[250px] h-[40px] pl-[20px] rounded-[5px] border-[1px]">
-              {username} {/* Ma'lumotlar holat orqali aks ettiriladi */}
+              {data?.username}
             </p>
           </div>
           <div className="flex flex-row items-center gap-[30px]">
@@ -254,7 +236,7 @@ const Profile = () => {
               <FaPhone />
             </span>
             <p className="flex items-center w-[250px] h-[40px] pl-[20px] rounded-[5px] border-[1px]">
-              {phoneNumber} {/* Ma'lumotlar holat orqali aks ettiriladi */}
+              {data?.phone_number}
             </p>
           </div>
         </div>
